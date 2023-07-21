@@ -11,6 +11,10 @@
 - 支持生成*epub*格式的电子书
 - 支持下载轻小说文库站点已下架的小说，如《无职转生》
 
+## 效果图
+
+![](assets/2.png)
+
 ## 贡献者
 
 <a href="https://github.com/SamsonMXVI/go-wenku-downloader/graphs/contributors">
