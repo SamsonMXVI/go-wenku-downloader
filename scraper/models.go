@@ -26,6 +26,7 @@ type Volume struct {
 	RowNumber    int    `json:"-"`
 	EndRow       int    `json:"-"`
 	CatalogueUrl string `json:"catalogue_url"`
+	ChapterCount int    `json:"chapter_count"`
 }
 
 type Chapter struct {

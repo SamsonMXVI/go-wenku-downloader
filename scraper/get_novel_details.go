@@ -10,6 +10,7 @@ import (
 
 // GetNovelDetails retrieves the novel details based on novelId
 func GetNovelDetails(novelId int) (*Novel, error) {
+	mEqCopyright := 0
 	novel := &Novel{
 		NovelId: novelId,
 	}
@@ -17,6 +18,10 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 	doc, err := Get(BASE_URL + strconv.Itoa(novelId) + ".htm")
 	if err != nil {
 		return nil, err
+	}
+
+	if strings.Contains(doc.Text(), "因版权问题，文库不再提供该小说的在线阅读与下载服务！") {
+		mEqCopyright = 2
 	}
 
 	// Get novelName
@@ -50,10 +55,10 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 	novel.Tag = getTextAfterColon(doc.Find("#content span b").Eq(2).Text())
 
 	// Get recentChapter
-	novel.RecentChapter = doc.Find("#content span").Eq(5).Text()
+	novel.RecentChapter = doc.Find("#content span").Eq(5 - mEqCopyright).Text()
 
 	// Get desc
-	novel.Desc = doc.Find("#content span").Eq(7).Text()
+	novel.Desc = doc.Find("#content span").Eq(7 - mEqCopyright).Text()
 
 	// Get catalogueUrl
 	novel.CatalogueUrl = doc.Find("#content").Children().First().Children().Eq(5).Children().First().Children().First().Children().First().Children().Eq(1).Children().First().AttrOr("href", "")

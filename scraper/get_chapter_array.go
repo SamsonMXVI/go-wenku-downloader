@@ -6,18 +6,18 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func GetChapterList(catalogueUrl string, volume *Volume) ([]*Chapter, error) {
-	doc, err := Get(catalogueUrl)
+func GetChapterArray(volume *Volume) ([]*Chapter, error) {
+	doc, err := Get(volume.CatalogueUrl)
 	if err != nil {
 		return nil, err
 	}
-	chapterList := make([]*Chapter, 0)
+	chapterArray := make([]*Chapter, 0)
 	rows := doc.Find("tbody").Children()
-	insertMap(volume.RowNumber, volume.EndRow, volume.Name, rows, &chapterList, volume.CatalogueUrl)
-	return chapterList, nil
+	insertMap(rows, &chapterArray, volume.RowNumber, volume.EndRow, volume.Name, volume.CatalogueUrl)
+	return chapterArray, nil
 }
 
-func insertMap(start int, end int, volumeName string, rows *goquery.Selection, chapterList *[]*Chapter, catalogueUrl string) {
+func insertMap(rows *goquery.Selection, chapterArray *[]*Chapter, start int, end int, volumeName string, catalogueUrl string) {
 	rows.Slice(start, end).Find("a").Each(func(i int, s *goquery.Selection) {
 		chapterIndex := i + 1
 		chapterTitle := s.Text()
@@ -28,6 +28,6 @@ func insertMap(start int, end int, volumeName string, rows *goquery.Selection, c
 			Title: chapterTitle,
 			Url:   chapterUrl,
 		}
-		*chapterList = append(*chapterList, chapter)
+		*chapterArray = append(*chapterArray, chapter)
 	})
 }

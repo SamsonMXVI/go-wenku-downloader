@@ -16,7 +16,7 @@ func CheckFileExist(filePath string) bool {
 func CheckDir(dirPath string) error {
 	_, err := os.Stat(dirPath)
 	if os.IsNotExist(err) {
-		// 目录不存在，新建目录
+		// create folder
 		err := os.MkdirAll(dirPath, os.ModePerm)
 		if err != nil {
 			return fmt.Errorf("创建目录失败: %v", err)

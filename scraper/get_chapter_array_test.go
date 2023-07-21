@@ -7,21 +7,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetChapterList(t *testing.T) {
+func TestGetChapterMap(t *testing.T) {
 	Novel, err := GetNovelDetails(1973)
 	require.NoError(t, err)
 	require.NotEmpty(t, Novel)
 	catalogueUrl := Novel.CatalogueUrl
 
-	volumes, err := GetNovelVolumns(catalogueUrl)
+	volumes, err := GetNovelVolumeArray(catalogueUrl)
 	require.NoError(t, err)
 	fmt.Println("Volume Map:")
 	require.NoError(t, err)
-	chaterList, err := GetChapterList(catalogueUrl, volumes[0])
+	chaterMap, err := GetChapterArray(volumes[0])
 	require.NoError(t, err)
-	require.NotEmpty(t, chaterList)
-	for _, chapter := range chaterList {
+	require.NotEmpty(t, chaterMap)
+	for _, chapter := range chaterMap {
 		fmt.Printf("Chapter %d: %s (%s)\n", chapter.Index, chapter.Title, chapter.Url)
 	}
-	fmt.Println("Total Chapters:", len(chaterList))
+	fmt.Println("Total Chapters:", len(chaterMap))
 }

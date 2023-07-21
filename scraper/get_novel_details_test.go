@@ -9,9 +9,15 @@ import (
 )
 
 func TestGetNovelDetail(t *testing.T) {
-	Novel, err := GetNovelDetails(1973)
+	novel, err := GetNovelDetails(1973)
 	require.NoError(t, err)
-	require.NotEmpty(t, Novel)
-	s, _ := json.MarshalIndent(Novel, "", "\t")
+	require.NotEmpty(t, novel)
+	s, _ := json.MarshalIndent(novel, "", "\t")
 	fmt.Println(string(s))
+
+	// copyright
+	// novel, err := GetNovelDetails(1587)
+	// require.NoError(t, err)
+	// require.NotEmpty(t, novel)
+	// fmt.Printf("%v", novel.LastUpdateTime)
 }
