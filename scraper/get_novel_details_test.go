@@ -15,9 +15,15 @@ func TestGetNovelDetail(t *testing.T) {
 	s, _ := json.MarshalIndent(novel, "", "\t")
 	fmt.Println(string(s))
 
-	// copyright
+	// copyright animate
 	// novel, err := GetNovelDetails(1587)
 	// require.NoError(t, err)
 	// require.NotEmpty(t, novel)
 	// fmt.Printf("%v", novel.LastUpdateTime)
+
+	// // animate
+	// novel, err := GetNovelDetails(2975)
+	// require.NoError(t, err)
+	// require.NotEmpty(t, novel)
+	// fmt.Printf("%v", novel.Desc)
 }

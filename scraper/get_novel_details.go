@@ -11,6 +11,7 @@ import (
 // GetNovelDetails retrieves the novel details based on novelId
 func GetNovelDetails(novelId int) (*Novel, error) {
 	mEqCopyright := 0
+	mEqAnimate := 0
 	novel := &Novel{
 		NovelId: novelId,
 	}
@@ -20,8 +21,14 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 		return nil, err
 	}
 
-	if strings.Contains(doc.Text(), "因版权问题，文库不再提供该小说的在线阅读与下载服务！") {
+	containsCopyright := strings.Contains(doc.Text(), "因版权问题，文库不再提供该小说的在线阅读与下载服务！")
+	containsAnimate := strings.Contains(doc.Text(), "本作已动画化")
+
+	if containsCopyright {
 		mEqCopyright = 2
+	}
+	if !containsAnimate {
+		mEqAnimate = 1
 	}
 
 	// Get novelName
@@ -43,7 +50,9 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 			case 4:
 				novel.LastUpdateTime = getTextAfterColon(text)
 			case 5:
-				novel.Length = getTextAfterColon(text)
+				if !containsCopyright {
+					novel.Length = getTextAfterColon(text)
+				}
 			}
 		}
 	})
@@ -52,13 +61,15 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 	novel.Cover = doc.Find("#content img").AttrOr("src", "")
 
 	// Get tag
-	novel.Tag = getTextAfterColon(doc.Find("#content span b").Eq(2).Text())
+	novel.Tag = getTextAfterColon(doc.Find("#content span b").Eq(2 - mEqAnimate).Text())
 
 	// Get recentChapter
-	novel.RecentChapter = doc.Find("#content span").Eq(5 - mEqCopyright).Text()
+	if !containsCopyright {
+		novel.RecentChapter = doc.Find("#content span").Eq(5 - mEqCopyright - mEqAnimate).Text()
+	}
 
 	// Get desc
-	novel.Desc = doc.Find("#content span").Eq(7 - mEqCopyright).Text()
+	novel.Desc = doc.Find("#content span").Eq(7 - mEqCopyright - mEqAnimate).Text()
 
 	// Get catalogueUrl
 	novel.CatalogueUrl = doc.Find("#content").Children().First().Children().Eq(5).Children().First().Children().First().Children().First().Children().Eq(1).Children().First().AttrOr("href", "")

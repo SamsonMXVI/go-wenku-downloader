@@ -1,6 +1,6 @@
 # 轻小说文库下载器
 
-## !!! 本项目参考 https://github.com/Messiahhh/wenku8-downloader 开发！！！
+## !!! 本项目参考 https://github.com/Messiahhh/wenku8-downloader 开发 !!!
 
 ![](assets/1.png)
 
