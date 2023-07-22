@@ -63,12 +63,11 @@ func questionTwo(question string) {
 		if err != nil {
 			return
 		}
-		novelId, err := searchNovels(str, enums.SearchType(selectedIndex))
+		err = searchNovels(str, enums.SearchType(selectedIndex))
 		if err != nil {
 			fmt.Printf("Search failed %v\n", err)
 			return
 		}
-		download(novelId)
 
 	case QuestionsText[DownloadNovel]:
 		novelId, err := inputNovelId()

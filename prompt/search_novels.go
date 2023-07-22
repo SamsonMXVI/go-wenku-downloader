@@ -1,6 +1,7 @@
 package prompt
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/fatih/color"
@@ -10,16 +11,13 @@ import (
 	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
 )
 
-func searchNovels(searchText string, searchType enums.SearchType) (int, error) {
+func searchNovels(searchText string, searchType enums.SearchType) error {
 	var pageIndex int = 1
 	var items []string
 	var c *color.Color
-	var novelId int
+	var novelId int = 0
 
-	prompt := promptui.Select{
-		Label: "请选择需要下载的小说",
-		Items: items,
-	}
+	prompt := promptui.Select{}
 
 	for {
 		items = []string{}
@@ -28,10 +26,10 @@ func searchNovels(searchText string, searchType enums.SearchType) (int, error) {
 		// get search result
 		searchResult, err := scraper.Search(searchText, searchType, strconv.Itoa(pageIndex))
 		if err != nil {
-			return 0, err
+			return err
 		}
 
-		if len(searchResult.NovelArray) == 1 {
+		if len(searchResult.NovelArray) == 1 && searchResult.TotalPage == "" {
 			novelId = searchResult.NovelArray[0].NovelId
 			break
 		}
@@ -39,8 +37,10 @@ func searchNovels(searchText string, searchType enums.SearchType) (int, error) {
 		// totalpage convert string to int
 		totalPage, err = strconv.Atoi(searchResult.TotalPage)
 		if err != nil {
-			return 0, err
+			return err
 		}
+
+		prompt.Label = fmt.Sprintf("请选择需要下载的小说-当前页面(%d/%d)", pageIndex, totalPage)
 
 		// generate prompt item
 		for _, sR := range searchResult.NovelArray {
@@ -65,11 +65,11 @@ func searchNovels(searchText string, searchType enums.SearchType) (int, error) {
 		prompt.Items = items
 		selectedIndex, result, err := prompt.Run()
 		if err != nil {
-			return 0, err
+			return err
 		}
 
 		if result == "返回" {
-			return 0, nil
+			return nil
 		}
 		if result == "上一页" {
 			pageIndex -= 1
@@ -84,10 +84,13 @@ func searchNovels(searchText string, searchType enums.SearchType) (int, error) {
 			novel := searchResult.NovelArray[selectedIndex]
 			novelId, err = getNovelIdFromUrl(novel.CatalogueUrl)
 			if err != nil {
-				return 0, err
+				return err
 			}
 			break
 		}
 	}
-	return novelId, nil
+	if novelId != 0 {
+		download(novelId)
+	}
+	return nil
 }

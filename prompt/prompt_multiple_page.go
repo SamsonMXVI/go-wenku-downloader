@@ -1,5 +1,0 @@
-package prompt
-
-func promptMultiplePage() {
-
-}

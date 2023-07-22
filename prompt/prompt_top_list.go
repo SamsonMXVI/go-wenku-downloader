@@ -1,6 +1,7 @@
 package prompt
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/fatih/color"
@@ -14,10 +15,7 @@ func promptTopList(searchType enums.TopSortType) error {
 	var items []string
 	var c *color.Color
 
-	prompt := promptui.Select{
-		Label: "请选择需要下载的小说",
-		Items: items,
-	}
+	prompt := promptui.Select{}
 
 	for {
 		items = []string{}
@@ -34,6 +32,8 @@ func promptTopList(searchType enums.TopSortType) error {
 		if err != nil {
 			return err
 		}
+
+		prompt.Label = fmt.Sprintf("请选择需要下载的小说-当前页面(%d/%d)", pageIndex, totalPage)
 
 		// generate prompt item
 		for _, sR := range pageResult.NovelArray {
