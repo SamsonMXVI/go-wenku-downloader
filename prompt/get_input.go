@@ -2,29 +2,20 @@ package prompt
 
 import (
 	"errors"
-	"regexp"
 	"strconv"
 
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 )
 
-func inputNovelId() (int64, error) {
-	var novelId int64
+func inputNovelId() (int, error) {
+	var novelId int
 	// validate input type number
 	validate := func(input string) error {
-		mNovelId, err := strconv.ParseInt(input, 10, 64)
+		mNovelId, err := strconv.Atoi(input)
 
-		re := regexp.MustCompile(`id=(\d+)`)
-		match := re.FindStringSubmatch(input)
-		if len(match) > 1 {
-			mNovelId, err = strconv.ParseInt(match[1], 10, 64)
-		}
-
-		re = regexp.MustCompile(`(\d+)\.htm`)
-		match = re.FindStringSubmatch(input)
-		if len(match) > 1 {
-			mNovelId, err = strconv.ParseInt(match[1], 10, 64)
+		if err != nil {
+			mNovelId, err = getNovelIdFromUrl(input)
 		}
 
 		if err != nil {
@@ -82,4 +73,36 @@ func inputCoverIndex() (int, error) {
 	}
 
 	return coverIndex, nil
+}
+
+func getInputString(label string) (string, error) {
+	prompt := promptui.Prompt{
+		Label: label,
+	}
+
+	res, err := prompt.Run()
+	if err != nil {
+		return "", err
+	}
+
+	return res, nil
+}
+
+func getSelectedIndex(label string, itmes []string) (int, error) {
+	prompt := promptui.Select{
+		Label: label,
+		Items: itmes,
+		Templates: &promptui.SelectTemplates{
+			Label:    "{{ . }}",
+			Active:   "> {{ . | cyan }}",
+			Inactive: "  {{ . | white }}",
+			Selected: "{{ . | green }}",
+		},
+	}
+	selectedIndex, _, err := prompt.Run()
+	if err != nil {
+		return 0, err
+	}
+
+	return selectedIndex, nil
 }

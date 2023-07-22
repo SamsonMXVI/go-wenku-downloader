@@ -10,6 +10,13 @@ func promptNovelDetails(novelId int) (*scraper.Novel, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	printNoverlDetail(novel)
+
+	return novel, nil
+}
+
+func printNoverlDetail(novel *scraper.Novel) {
 	c := color.New(color.FgCyan)
 	c.Printf("名称：%v\n", novel.NovelName)
 	c.Printf("简介：%v\n", novel.Desc)
@@ -19,6 +26,4 @@ func promptNovelDetails(novelId int) (*scraper.Novel, error) {
 	c.Printf("最新章节：%v\n", novel.RecentChapter)
 	c.Printf("全文长度: %v\n", novel.Length)
 	c.Printf("上次更新时间：%v\n", novel.LastUpdateTime)
-
-	return novel, nil
 }

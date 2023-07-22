@@ -1,5 +1,5 @@
 package prompt
 
-func popularNovel() {
+func promptTopList() {
 	// todos
 }

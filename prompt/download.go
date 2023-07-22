@@ -14,8 +14,8 @@ import (
 	"github.com/samsonmxvi/go-wenku-downloader/util"
 )
 
-func download(novelId int64) {
-	downloadPath := strconv.FormatInt(novelId, 10)
+func download(novelId int) {
+	downloadPath := strconv.Itoa(novelId)
 	if err := util.CheckDir(downloadPath); err != nil {
 		fmt.Printf("创建目录失败: %e", err)
 		return

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/manifoldco/promptui"
+	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
 )
 
 type Questions int
@@ -19,7 +20,7 @@ const (
 
 var QuestionsText = []string{
 	"查看热门小说 --待实现",
-	"搜索小说 --待实现",
+	"搜索小说",
 	"下载小说",
 	"什么也不做",
 }
@@ -47,9 +48,17 @@ func InitPrompt() {
 func questionTwo(question string) {
 	switch question {
 	case QuestionsText[ViewPopularNovels]:
-		popularNovel()
+		promptTopList()
 	case QuestionsText[SearchNovels]:
-		searchNovels()
+		selectedIndex, err := getSelectedIndex("请选择搜索类型", enums.SearchTypeText)
+		if err != nil {
+			return
+		}
+		str, err := getInputString(fmt.Sprintf("请输入要搜索的%s", enums.SearchTypeText[selectedIndex]))
+		if err != nil {
+			return
+		}
+		searchNovels(str, enums.SearchType(selectedIndex))
 	case QuestionsText[DownloadNovel]:
 		novelId, err := inputNovelId()
 		if err != nil {
