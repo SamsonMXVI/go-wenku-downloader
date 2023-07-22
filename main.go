@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/samsonmxvi/go-wenku-downloader/prompt"
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
 	"github.com/urfave/cli"
@@ -13,8 +14,9 @@ import (
 func main() {
 	err := scraper.GetCookie()
 	if err != nil {
-		log.Fatalf("登陆失败 %v \n", err)
-		fmt.Println("未登录-(查询/热门小说)功能将无法使用")
+		c := color.New(color.FgRed)
+		c.Printf("登陆失败 %v \n", err)
+		c.Println("未登录-(查询/热门小说)功能将无法使用")
 	}
 	app := &cli.App{
 		Name:    "Go轻小说文库下载器",

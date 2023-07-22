@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"errors"
+	"regexp"
 	"strconv"
 
 	"github.com/fatih/color"
@@ -14,8 +15,20 @@ func inputNovelId() (int, error) {
 	validate := func(input string) error {
 		mNovelId, err := strconv.Atoi(input)
 
+		re := regexp.MustCompile(`id=(\d+)`)
+		match := re.FindStringSubmatch(input)
+		if len(match) > 1 {
+			mNovelId, err = strconv.Atoi(match[1])
+		}
+
+		re = regexp.MustCompile(`(\d+)\.htm`)
+		match = re.FindStringSubmatch(input)
+		if len(match) > 1 {
+			mNovelId, err = strconv.Atoi(match[1])
+		}
+
 		if err != nil {
-			mNovelId, err = getNovelIdFromUrl(input)
+			return errors.New("invalid number or url")
 		}
 
 		if err != nil {
