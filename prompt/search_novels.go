@@ -31,8 +31,7 @@ func searchNovels(searchText string, searchType enums.SearchType) error {
 		}
 
 		if len(searchResult.NovelArray) == 1 {
-			printNoverlDetail(searchResult.NovelArray[0])
-			promptVolumeSelect(searchResult.NovelArray[0].CatalogueUrl)
+			download(searchResult.NovelArray[0].NovelId)
 			return nil
 		}
 
