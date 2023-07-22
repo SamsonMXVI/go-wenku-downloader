@@ -7,10 +7,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
 	"github.com/samsonmxvi/go-wenku-downloader/util"
 )
 
-func Search(str string, searchType SearchType, page string) (*PageResult, error) {
+func Search(str string, searchType enums.SearchType, page string) (*PageResult, error) {
 	var searchResult *PageResult = &PageResult{}
 	searchKeyByte, err := util.Utf8ToGbk(str)
 	if err != nil {
@@ -18,7 +19,7 @@ func Search(str string, searchType SearchType, page string) (*PageResult, error)
 	}
 
 	params := url.Values{}
-	params.Add("searchtype", SearchTypeTextReq[searchType])
+	params.Add("searchtype", enums.SearchTypeTextReq[searchType])
 	params.Add("searchkey", string(searchKeyByte))
 	params.Add("page", page)
 

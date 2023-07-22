@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSearch(t *testing.T) {
 	err := GetCookie()
 	require.NoError(t, err)
-	// result, err := Search("魔王学院不", ArticleName, "1")
+	// result, err := Search("魔王学院不", enums.ArticleName, "1")
 	// require.NoError(t, err)
 	// require.NotEmpty(t, result.NovelArray)
 	// require.True(t, len(result.NovelArray) == 1)
@@ -24,7 +25,7 @@ func TestSearch(t *testing.T) {
 
 	// fmt.Printf("total page %s\n", result.TotalPage)
 
-	result, err := Search("秋", SearchAuthor, "1")
+	result, err := Search("秋", enums.SearchAuthor, "1")
 	require.NoError(t, err)
 	require.NotEmpty(t, result.NovelArray)
 	require.True(t, len(result.NovelArray) > 1)

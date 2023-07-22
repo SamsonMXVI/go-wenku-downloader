@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
 	"github.com/stretchr/testify/require"
 )
 
@@ -11,7 +12,7 @@ func TestGetTop(t *testing.T) {
 	err := GetCookie()
 	require.NoError(t, err)
 
-	result, err := GetTop(TopSoftDailyLeaderboard, "1")
+	result, err := GetTop(enums.TopSoftDailyLeaderboard, "1")
 	require.NoError(t, err)
 	require.NotEmpty(t, result.NovelArray)
 	require.True(t, len(result.NovelArray) > 1)

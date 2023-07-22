@@ -1,4 +1,4 @@
-package scraper
+package enums
 
 type SearchType int
 
