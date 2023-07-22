@@ -5,15 +5,15 @@ test-downloader:
 	go test -v ./downloader
 
 build: 
-	go build -o build/wenku_downloader
+	rm -rf build/wenku_downloader && go build -o build/wenku_downloader
 
 build-exe-amd64:
-	GOOS=windows GOARCH=amd64 go build -o build/wenku_downloader_amd64.exe main.go
+	rm -rf build/build/wenku_downloader_amd64.exe && GOOS=windows GOARCH=amd64 go build -o build/wenku_downloader_amd64.exe main.go
 
 build-exe-386:
-	GOOS=windows GOARCH=amd64 go build -o build/wenku_downloader_x86.exe main.go
+	rm -rf build/wenku_downloader_x86.exe && GOOS=windows GOARCH=amd64 go build -o build/wenku_downloader_x86.exe main.go
 
 build-all: 
-	rm -rf build && make build && make build-exe-amd64 && make build-exe-386
+	make build && make build-exe-amd64 && make build-exe-386
  
 .PHONY: test-scraper test-downloader build-exe-amd64 build-exe-386 build-all build
