@@ -17,7 +17,9 @@ func searchNovels(searchText string, searchType enums.SearchType) error {
 	var c *color.Color
 	var novelId int = 0
 
-	prompt := promptui.Select{}
+	prompt := promptui.Select{
+		Size: 9,
+	}
 
 	for {
 		items = []string{}

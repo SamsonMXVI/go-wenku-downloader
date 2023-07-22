@@ -15,7 +15,9 @@ func promptTopList(searchType enums.TopSortType) error {
 	var items []string
 	var c *color.Color
 
-	prompt := promptui.Select{}
+	prompt := promptui.Select{
+		Size: 9,
+	}
 
 	for {
 		items = []string{}
