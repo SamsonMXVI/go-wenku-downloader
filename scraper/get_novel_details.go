@@ -80,8 +80,12 @@ func getNovelDetailsDoc(doc *goquery.Document, novel *Novel) {
 	novel.Desc = doc.Find("#content span").Eq(7 - mEqCopyright - mEqAnimate).Text()
 
 	// Get catalogueUrl
-	novel.CatalogueUrl = doc.Find("#content").Children().First().Children().Eq(5).Children().First().Children().First().Children().First().Children().Eq(1).Children().First().AttrOr("href", "")
-
+	html, _ := doc.Find("#content").Children().First().Html()
+	re := regexp.MustCompile(`<a href="(https://www\.wenku8\.net/novel/[^"]+)">小说目录</a>`)
+	match := re.FindStringSubmatch(html)
+	if match != nil {
+		novel.CatalogueUrl = match[1]
+	}
 }
 
 // Utility function to extract text after colon in a string

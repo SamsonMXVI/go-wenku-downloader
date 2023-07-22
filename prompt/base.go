@@ -53,6 +53,7 @@ func questionTwo(question string) {
 			return
 		}
 		promptTopList(enums.TopSortType(selectedIndex))
+
 	case QuestionsText[SearchNovels]:
 		selectedIndex, err := getSelectedIndex("请选择搜索类型", enums.SearchTypeText)
 		if err != nil {
@@ -62,7 +63,13 @@ func questionTwo(question string) {
 		if err != nil {
 			return
 		}
-		searchNovels(str, enums.SearchType(selectedIndex))
+		novelId, err := searchNovels(str, enums.SearchType(selectedIndex))
+		if err != nil {
+			fmt.Printf("Search failed %v\n", err)
+			return
+		}
+		download(novelId)
+
 	case QuestionsText[DownloadNovel]:
 		novelId, err := inputNovelId()
 		if err != nil {
@@ -70,6 +77,7 @@ func questionTwo(question string) {
 			return
 		}
 		download(novelId)
+
 	case QuestionsText[DoNothing]:
 		os.Exit(1)
 	default:

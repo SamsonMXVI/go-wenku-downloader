@@ -10,10 +10,11 @@ import (
 	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
 )
 
-func searchNovels(searchText string, searchType enums.SearchType) error {
+func searchNovels(searchText string, searchType enums.SearchType) (int, error) {
 	var pageIndex int = 1
 	var items []string
 	var c *color.Color
+	var novelId int
 
 	prompt := promptui.Select{
 		Label: "请选择需要下载的小说",
@@ -27,17 +28,18 @@ func searchNovels(searchText string, searchType enums.SearchType) error {
 		// get search result
 		searchResult, err := scraper.Search(searchText, searchType, strconv.Itoa(pageIndex))
 		if err != nil {
-			return err
+			return 0, err
 		}
 
 		if len(searchResult.NovelArray) == 1 {
-			download(searchResult.NovelArray[0].NovelId)
+			novelId = searchResult.NovelArray[0].NovelId
+			break
 		}
 
 		// totalpage convert string to int
 		totalPage, err = strconv.Atoi(searchResult.TotalPage)
 		if err != nil {
-			return err
+			return 0, err
 		}
 
 		// generate prompt item
@@ -63,11 +65,11 @@ func searchNovels(searchText string, searchType enums.SearchType) error {
 		prompt.Items = items
 		selectedIndex, result, err := prompt.Run()
 		if err != nil {
-			return err
+			return 0, err
 		}
 
 		if result == "返回" {
-			return nil
+			return 0, nil
 		}
 		if result == "上一页" {
 			pageIndex -= 1
@@ -80,12 +82,12 @@ func searchNovels(searchText string, searchType enums.SearchType) error {
 
 		if result != "" {
 			novel := searchResult.NovelArray[selectedIndex]
-			novelId, err := getNovelIdFromUrl(novel.CatalogueUrl)
+			novelId, err = getNovelIdFromUrl(novel.CatalogueUrl)
 			if err != nil {
-				return err
+				return 0, err
 			}
-			download(novelId)
-			return nil
+			break
 		}
 	}
+	return novelId, nil
 }
