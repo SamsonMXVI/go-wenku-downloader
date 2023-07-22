@@ -21,7 +21,12 @@ func promptVolumeSelect(catalogueUrl string) ([]*scraper.Volume, error) {
 		Message: "请选择下载第几卷:",
 		Options: volumeOptions,
 	}
-	survey.AskOne(prompt, &volumeSelected)
+
+	err = survey.AskOne(prompt, &volumeSelected)
+	if err != nil {
+		return nil, err
+	}
+
 	for _, v := range volumeSelected {
 		for _, volume := range volumeArray {
 			if v == volume.Name {

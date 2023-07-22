@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 )
@@ -48,6 +49,7 @@ func inputNovelId() (int, error) {
 	prompt := promptui.Prompt{
 		Label:    "输入小说ID",
 		Validate: validate,
+		Stdout:   &noBellStdout{},
 	}
 
 	_, err := prompt.Run()
@@ -77,6 +79,7 @@ func inputCoverIndex() (int, error) {
 	prompt := promptui.Prompt{
 		Label:    "输入第几张插图作为封面(默认:0, 使用小说封面)",
 		Validate: validate,
+		Stdout:   &noBellStdout{},
 	}
 
 	_, err := prompt.Run()
@@ -90,7 +93,8 @@ func inputCoverIndex() (int, error) {
 
 func getInputString(label string) (string, error) {
 	prompt := promptui.Prompt{
-		Label: label,
+		Label:  label,
+		Stdout: &noBellStdout{},
 	}
 
 	res, err := prompt.Run()
@@ -102,21 +106,14 @@ func getInputString(label string) (string, error) {
 }
 
 func getSelectedIndex(label string, itmes []string) (int, error) {
-	prompt := promptui.Select{
-		Label: label,
-		Items: itmes,
-		Templates: &promptui.SelectTemplates{
-			Label:    "{{ . }}",
-			Active:   "> {{ . | cyan }}",
-			Inactive: "  {{ . | white }}",
-			Selected: "{{ . | green }}",
-		},
-		Size: 9,
+	selectedIndex := 0
+	prompt := &survey.Select{
+		Message: label,
+		Options: itmes,
 	}
-	selectedIndex, _, err := prompt.Run()
+	err := survey.AskOne(prompt, &selectedIndex)
 	if err != nil {
 		return 0, err
 	}
-
 	return selectedIndex, nil
 }

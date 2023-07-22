@@ -2,10 +2,8 @@ package prompt
 
 import (
 	"fmt"
-	"log"
 	"os"
 
-	"github.com/manifoldco/promptui"
 	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
 )
 
@@ -26,35 +24,21 @@ var QuestionsText = []string{
 }
 
 func InitPrompt() {
-	prompt := promptui.Select{
-		Label: "你打算做什么",
-		Items: QuestionsText,
-		Templates: &promptui.SelectTemplates{
-			Label:    "{{ . }}",
-			Active:   "> {{ . | cyan }}",
-			Inactive: "  {{ . | white }}",
-			Selected: "{{ . | green }}",
-		},
-	}
-
 	for {
-		_, question, err := prompt.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-		questionTwo(question)
+		selectedIndex, _ := getSelectedIndex("你打算做什么", QuestionsText)
+		questionTwo(Questions(selectedIndex))
 	}
 }
-func questionTwo(question string) {
+func questionTwo(question Questions) {
 	switch question {
-	case QuestionsText[ViewPopularNovels]:
+	case ViewPopularNovels:
 		selectedIndex, err := getSelectedIndex("请选择分类", enums.TopSoftText)
 		if err != nil {
 			return
 		}
 		promptTopList(enums.TopSortType(selectedIndex))
 
-	case QuestionsText[SearchNovels]:
+	case SearchNovels:
 		selectedIndex, err := getSelectedIndex("请选择搜索类型", enums.SearchTypeText)
 		if err != nil {
 			return
@@ -69,7 +53,7 @@ func questionTwo(question string) {
 			return
 		}
 
-	case QuestionsText[DownloadNovel]:
+	case DownloadNovel:
 		novelId, err := inputNovelId()
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
@@ -77,7 +61,7 @@ func questionTwo(question string) {
 		}
 		download(novelId)
 
-	case QuestionsText[DoNothing]:
+	case DoNothing:
 		os.Exit(1)
 	default:
 		fmt.Println()
