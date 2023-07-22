@@ -13,7 +13,11 @@
 - 支持通过(小说名/作者名)搜索小说
 - 支持通过(热门小说/总收藏榜/动画化作品/等等)分类查询
 
-## 使用方法(MacOS/Linux)
+## 使用方法(Window/MacOS/Linux)
+
+[Release 下载](https://github.com/SamsonMXVI/go-wenku-downloader)
+
+> windows 直接运行 exe 即可
 
 ```shell
 chmod +x wenku_downloader
