@@ -13,6 +13,13 @@
 - 支持通过(小说名/作者名)搜索小说
 - 支持通过(热门小说/总收藏榜/动画化作品/等等)分类查询
 
+## 使用方法(MacOS/Linux)
+
+```shell
+chmod +x wenku_downloader
+./wenku_downloader
+```
+
 ## 效果图
 
 ![](assets/2.png)
