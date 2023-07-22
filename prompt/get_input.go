@@ -111,6 +111,7 @@ func getSelectedIndex(label string, itmes []string) (int, error) {
 			Inactive: "  {{ . | white }}",
 			Selected: "{{ . | green }}",
 		},
+		Size: 9,
 	}
 	selectedIndex, _, err := prompt.Run()
 	if err != nil {
