@@ -3,6 +3,8 @@ package scraper
 const (
 	BASE_URL           = "https://www.wenku8.net/book/"
 	DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"
+	SEARCH_URL         = "https://www.wenku8.net/modules/article/search.php"
+	TOP_URL            = "https://www.wenku8.net/modules/article/toplist.php"
 )
 
 type Novel struct {
@@ -48,4 +50,9 @@ type CommandOptions struct {
 type ChapterContent struct {
 	Article string   `json:"article"`
 	Images  []string `json:"images"`
+}
+
+type PageResult struct {
+	TotalPage  string   `json:"total_page"`
+	NovelArray []*Novel `json:"result"`
 }

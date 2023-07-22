@@ -10,8 +10,7 @@ import (
 
 // GetNovelDetails retrieves the novel details based on novelId
 func GetNovelDetails(novelId int) (*Novel, error) {
-	mEqCopyright := 0
-	mEqAnimate := 0
+
 	novel := &Novel{
 		NovelId: novelId,
 	}
@@ -20,6 +19,15 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	getNovelDetailsDoc(doc, novel)
+
+	return novel, nil
+}
+
+func getNovelDetailsDoc(doc *goquery.Document, novel *Novel) {
+	mEqCopyright := 0
+	mEqAnimate := 0
 
 	containsCopyright := strings.Contains(doc.Text(), "因版权问题，文库不再提供该小说的在线阅读与下载服务！")
 	containsAnimate := strings.Contains(doc.Text(), "本作已动画化")
@@ -74,7 +82,6 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 	// Get catalogueUrl
 	novel.CatalogueUrl = doc.Find("#content").Children().First().Children().Eq(5).Children().First().Children().First().Children().First().Children().Eq(1).Children().First().AttrOr("href", "")
 
-	return novel, nil
 }
 
 // Utility function to extract text after colon in a string

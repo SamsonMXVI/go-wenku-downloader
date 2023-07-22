@@ -3,7 +3,9 @@ package util
 import (
 	"bytes"
 	"io"
+	"io/ioutil"
 	"regexp"
+	"strings"
 
 	"github.com/axgle/mahonia"
 	"golang.org/x/text/encoding/simplifiedchinese"
@@ -42,4 +44,9 @@ func GbkToUtf8(s []byte) ([]byte, error) {
 		return nil, e
 	}
 	return d, nil
+}
+
+func Utf8ToGbk(s string) ([]byte, error) {
+	reader := transform.NewReader(strings.NewReader(s), simplifiedchinese.GBK.NewEncoder())
+	return ioutil.ReadAll(reader)
 }

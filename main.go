@@ -13,8 +13,8 @@ import (
 func main() {
 	err := scraper.GetCookie()
 	if err != nil {
-		log.Fatalf("Failed to get cookie %v", err)
-		return
+		log.Fatalf("登陆失败 %v \n", err)
+		fmt.Println("未登录-(查询/热门小说)功能将无法使用")
 	}
 	app := &cli.App{
 		Name:    "Go轻小说文库下载器",
