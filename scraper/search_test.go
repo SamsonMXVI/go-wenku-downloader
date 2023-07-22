@@ -25,7 +25,7 @@ func TestSearch(t *testing.T) {
 
 	// fmt.Printf("total page %s\n", result.TotalPage)
 
-	result, err := Search("秋", enums.SearchAuthor, "1")
+	result, err := Search("西尾维新", enums.SearchAuthor, "1")
 	require.NoError(t, err)
 	require.NotEmpty(t, result.NovelArray)
 	require.True(t, len(result.NovelArray) > 1)

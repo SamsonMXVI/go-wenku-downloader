@@ -19,7 +19,7 @@ const (
 )
 
 var QuestionsText = []string{
-	"查看热门小说 --待实现",
+	"查看(今日更新/热门轻小说/总推荐榜/...)",
 	"搜索小说",
 	"下载小说",
 	"什么也不做",
@@ -48,7 +48,11 @@ func InitPrompt() {
 func questionTwo(question string) {
 	switch question {
 	case QuestionsText[ViewPopularNovels]:
-		promptTopList()
+		selectedIndex, err := getSelectedIndex("请选择分类", enums.TopSoftText)
+		if err != nil {
+			return
+		}
+		promptTopList(enums.TopSortType(selectedIndex))
 	case QuestionsText[SearchNovels]:
 		selectedIndex, err := getSelectedIndex("请选择搜索类型", enums.SearchTypeText)
 		if err != nil {
