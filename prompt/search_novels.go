@@ -32,7 +32,6 @@ func searchNovels(searchText string, searchType enums.SearchType) error {
 
 		if len(searchResult.NovelArray) == 1 {
 			download(searchResult.NovelArray[0].NovelId)
-			return nil
 		}
 
 		// totalpage convert string to int
