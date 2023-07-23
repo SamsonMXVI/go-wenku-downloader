@@ -18,8 +18,6 @@
 ## 使用方法(Window/MacOS/Linux)
 
 [Release 下载](https://github.com/SamsonMXVI/go-wenku-downloader)
-插图选择推荐 1，大部分情况下每一卷的插图第一页都是这卷的封面图片。
-如果插图选错了也没关系重新启动下载选择分卷再选插图即可，已下载的内容不会再下载一次会直接生成 epub。
 
 > windows 直接运行 exe 即可
 
@@ -27,6 +25,9 @@
 chmod +x wenku_downloader
 ./wenku_downloader
 ```
+
+插图选择推荐 1，大部分情况下每一卷的插图第一页都是这卷的封面图片。
+如果插图选错了也没关系重新启动下载选择分卷再选插图即可，已下载的内容不会再下载一次会直接生成 epub。
 
 ## 效果图
 
