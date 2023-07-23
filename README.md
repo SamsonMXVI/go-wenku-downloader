@@ -1,10 +1,10 @@
 # 轻小说文库下载器
 
-## !!! 本项目参考 https://github.com/Messiahhh/wenku8-downloader 开发 !!!
-
 ![](assets/1.png)
 
 ## 介绍
+
+### !!! 本项目参考 https://github.com/Messiahhh/wenku8-downloader 开发 !!!
 
 本工具可用来下载[轻小说文库](https://www.wenku8.net/index.php)的小说，支持以下功能
 
