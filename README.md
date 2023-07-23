@@ -6,8 +6,7 @@
 
 ### !!! 本项目参考 https://github.com/Messiahhh/wenku8-downloader 开发 !!!
 
-### 非常感谢 wenku 提供的小说
-
+非常感谢 wenku 提供的小说
 本工具可用来下载[轻小说文库](https://www.wenku8.net/index.php)的小说，支持以下功能
 
 - 支持生成*epub*格式的电子书
