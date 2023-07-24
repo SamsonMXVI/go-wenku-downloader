@@ -25,7 +25,7 @@ func CreateSectionXhtml(title string, article string) string {
 }
 
 func AddSectionXhtml(epub *epub.Epub, title string, xhtml string) error {
-	_, err := epub.AddSection(xhtml, title, title+".xhtml", "")
+	_, err := epub.AddSection(xhtml, title, "", "")
 	if err != nil {
 		return err
 	}

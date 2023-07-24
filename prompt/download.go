@@ -98,16 +98,19 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	for i := 1; i <= chapterCount; i++ {
 		file, err := os.ReadFile(path.Join(volumePath, fmt.Sprintf("%d.json", i)))
 		if err != nil {
+			fmt.Printf("error %v \n", err)
 			return err
 		}
 		chapter := &scraper.Chapter{}
 		err = json.Unmarshal([]byte(file), &chapter)
 		if err != nil {
+			fmt.Printf("error %v \n", err)
 			return err
 		}
 		jsonByte, err := json.MarshalIndent(chapter.Content.Article, "", " ")
 		jsonStr := strings.Replace(string(jsonByte), "\"", "", -1)
 		if err != nil {
+			fmt.Printf("error %v \n", err)
 			return err
 		}
 		xhtml := util.CreateSectionXhtml(chapter.Title, jsonStr)
@@ -121,6 +124,7 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 		}
 		err = util.AddSectionXhtml(epub, chapter.Title, xhtml)
 		if err != nil {
+			fmt.Printf("error %v \n", err)
 			return err
 		}
 	}
@@ -133,6 +137,7 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 
 	err = epub.Write(epubFilePath)
 	if err != nil {
+		fmt.Printf("error %v \n", err)
 		return err
 	}
 	return nil
