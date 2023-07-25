@@ -4,7 +4,7 @@
 
 ## 介绍
 
-### !!! 本项目参考 https://github.com/Messiahhh/wenku8-downloader 开发 !!!
+### ! 本项目参考 https://github.com/Messiahhh/wenku8-downloader 开发 !
 
 非常感谢 wenku 提供的小说 <br />
 本工具可用来下载[轻小说文库](https://www.wenku8.net/index.php)的小说，支持以下功能
@@ -15,7 +15,7 @@
 - 支持通过(小说名/作者名)搜索小说
 - 支持通过(热门小说/总收藏榜/动画化作品/等等)分类查询
 
-### 虽然显得很虚伪，但请支持正版，有能力后补票原文小说。
+### ！虽然显得很虚伪，但请支持正版，有能力后补票原文小说。！
 
 ## 使用方法(Window/MacOS/Linux)
 
