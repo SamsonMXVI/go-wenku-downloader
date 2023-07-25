@@ -15,6 +15,8 @@
 - 支持通过(小说名/作者名)搜索小说
 - 支持通过(热门小说/总收藏榜/动画化作品/等等)分类查询
 
+### 虽然显得很虚伪，但请支持正版，有能力后补票原文小说。
+
 ## 使用方法(Window/MacOS/Linux)
 
 [Release 下载](https://github.com/SamsonMXVI/go-wenku-downloader)
