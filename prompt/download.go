@@ -3,6 +3,7 @@ package prompt
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path"
 	"strconv"
@@ -14,18 +15,16 @@ import (
 	"github.com/samsonmxvi/go-wenku-downloader/util"
 )
 
-func download(novelId int) {
+func download(novelId int) error {
 	downloadPath := strconv.Itoa(novelId)
 	if err := util.CheckDir(downloadPath); err != nil {
-		fmt.Printf("创建目录失败: %e", err)
-		return
+		return fmt.Errorf("创建目录失败: %e", err)
 	}
 
 	// get novel metadata
 	novel, err := promptNovelDetails(int(novelId))
 	if err != nil {
-		fmt.Printf("获取小说信息失败: %e", err)
-		return
+		return fmt.Errorf("获取小说信息失败: %e", err)
 	}
 
 	// download novel metadata and coverImg
@@ -34,29 +33,26 @@ func download(novelId int) {
 	// download cover image
 	success := false
 	for i := 0; i < 3; i++ {
-		err := downloader.DownloadImage(novel.Cover, downloadPath)
+		err = downloader.DownloadImage(novel.Cover, downloadPath)
 		if err == nil {
 			success = true
 			break
 		}
 	}
 	if !success {
-		fmt.Printf("download cover image failed")
-		return
+		return fmt.Errorf("download cover image failed %v", err)
 	}
 
 	// get selected volume list
 	volumeArray, err := promptVolumeSelect(novel.CatalogueUrl)
 	if err != nil {
-		fmt.Printf("下载小说卷信息失败: %e", err)
-		return
+		return fmt.Errorf("下载小说卷信息失败: %e", err)
 	}
 
 	// get coverIndex from input
 	converIndex, err := inputCoverIndex()
 	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		return
+		return fmt.Errorf("prompt failed %v", err)
 	}
 
 	// download volume
@@ -64,15 +60,17 @@ func download(novelId int) {
 		volumePath := path.Join(downloadPath, volume.Name)
 		err = downloader.DownloadVolume(volume, volumePath)
 		if err != nil {
-			fmt.Printf("download volume error %v", err)
+			log.Printf("download volume error %v", err)
 			continue
 		}
-		err := createEpub(novel, volume.Name, volume.ChapterCount, converIndex, downloadPath)
+		err = createEpub(novel, volume.Name, volume.ChapterCount, converIndex, downloadPath)
 		if err != nil {
-			fmt.Printf("create epub failed: %v", err)
+			log.Printf("create epub failed: %v", err)
 			continue
 		}
 	}
+
+	return nil
 }
 
 func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, coverIndex int, downloadPath string) error {
@@ -98,19 +96,16 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	for i := 1; i <= chapterCount; i++ {
 		file, err := os.ReadFile(path.Join(volumePath, fmt.Sprintf("%d.json", i)))
 		if err != nil {
-			fmt.Printf("error %v \n", err)
 			return err
 		}
 		chapter := &scraper.Chapter{}
 		err = json.Unmarshal([]byte(file), &chapter)
 		if err != nil {
-			fmt.Printf("error %v \n", err)
 			return err
 		}
 		jsonByte, err := json.MarshalIndent(chapter.Content.Article, "", " ")
 		jsonStr := strings.Replace(string(jsonByte), "\"", "", -1)
 		if err != nil {
-			fmt.Printf("error %v \n", err)
 			return err
 		}
 		xhtml := util.CreateSectionXhtml(chapter.Title, jsonStr)
@@ -124,7 +119,6 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 		}
 		err = util.AddSectionXhtml(epub, chapter.Title, xhtml)
 		if err != nil {
-			fmt.Printf("error %v \n", err)
 			return err
 		}
 	}
@@ -137,7 +131,6 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 
 	err = epub.Write(epubFilePath)
 	if err != nil {
-		fmt.Printf("error %v \n", err)
 		return err
 	}
 	return nil

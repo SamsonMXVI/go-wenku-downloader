@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 
@@ -12,7 +13,18 @@ import (
 )
 
 func main() {
-	err := scraper.GetCookie()
+	f, err := os.OpenFile("scraper.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModePerm)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		f.Close()
+	}()
+	multiWriter := io.MultiWriter(os.Stdout, f)
+	log.SetOutput(multiWriter)
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+
+	err = scraper.GetCookie()
 	if err != nil {
 		c := color.New(color.FgRed)
 		c.Printf("登陆失败 %v \n", err)

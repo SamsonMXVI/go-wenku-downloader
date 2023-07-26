@@ -83,7 +83,10 @@ func promptTopList(searchType enums.TopSortType) error {
 			if err != nil {
 				return err
 			}
-			download(novelId)
+			err = download(novelId)
+			if err != nil {
+				return err
+			}
 			return nil
 		}
 	}

@@ -11,7 +11,7 @@ import (
 func AddSection(epub *epub.Epub, title string, article string) error {
 	body := strings.ReplaceAll(article, "\\n", "<br/>")
 	xhtml := fmt.Sprintf(`<h1>%v</h1>%v`, title, body)
-	_, err := epub.AddSection(xhtml, title, title+".xhtml", "")
+	_, err := epub.AddSection(xhtml, title, "", "")
 	if err != nil {
 		return err
 	}

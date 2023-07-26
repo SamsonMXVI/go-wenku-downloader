@@ -94,7 +94,10 @@ func searchNovels(searchText string, searchType enums.SearchType) error {
 		}
 	}
 	if novelId != 0 {
-		download(novelId)
+		err := download(novelId)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

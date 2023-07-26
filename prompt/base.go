@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
@@ -34,6 +35,7 @@ func questionTwo(question Questions) {
 	case ViewPopularNovels:
 		selectedIndex, err := getSelectedIndex("请选择分类", enums.TopSoftText)
 		if err != nil {
+			log.Printf("Search failed %v\n", err)
 			return
 		}
 		promptTopList(enums.TopSortType(selectedIndex))
@@ -41,25 +43,31 @@ func questionTwo(question Questions) {
 	case SearchNovels:
 		selectedIndex, err := getSelectedIndex("请选择搜索类型", enums.SearchTypeText)
 		if err != nil {
+			log.Printf("Search failed %v\n", err)
 			return
 		}
 		str, err := getInputString(fmt.Sprintf("请输入要搜索的%s", enums.SearchTypeText[selectedIndex]))
 		if err != nil {
+			log.Printf("Search failed %v\n", err)
 			return
 		}
 		err = searchNovels(str, enums.SearchType(selectedIndex))
 		if err != nil {
-			fmt.Printf("Search failed %v\n", err)
+			log.Printf("Search failed %v\n", err)
 			return
 		}
 
 	case DownloadNovel:
 		novelId, err := inputNovelId()
 		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
+			log.Printf("Prompt failed %v\n", err)
 			return
 		}
-		download(novelId)
+		err = download(novelId)
+		if err != nil {
+			log.Printf("download failed %v\n", err)
+			return
+		}
 
 	case DoNothing:
 		os.Exit(1)

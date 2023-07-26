@@ -3,6 +3,7 @@ package downloader
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path"
 
@@ -50,6 +51,7 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 
 		err := scraper.GetChapterContent(chapter)
 		if err != nil {
+			log.Printf("get chapter content error %v", err)
 			downloadError.Chapter = append(downloadError.Chapter, chapter)
 		}
 
@@ -59,6 +61,7 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 
 		err = DownloadChapter(chapter, dirPath)
 		if err != nil {
+			log.Printf("download chapter error %v", err)
 			downloadError.Chapter = append(downloadError.Chapter, chapter)
 		}
 		progressBar.Increment()
@@ -119,11 +122,13 @@ func reDownloadError(dirPath string) error {
 			err := scraper.GetChapterContent(chapter)
 
 			if err != nil {
+				log.Printf("re get chapter content error %v", err)
 				continue
 			}
 
 			err = DownloadChapter(chapter, dirPath)
 			if err != nil {
+				log.Printf("re download chapter error %v", err)
 				continue
 			}
 
