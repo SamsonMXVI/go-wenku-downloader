@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"time"
 
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
 	"github.com/samsonmxvi/go-wenku-downloader/util"
@@ -50,6 +51,8 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 		}
 
 		err := scraper.GetChapterContent(chapter)
+		time.Sleep(1 * time.Second) // temp fix rate limit
+
 		if err != nil {
 			log.Printf("get chapter content error %v", err)
 			downloadError.Chapter = append(downloadError.Chapter, chapter)
