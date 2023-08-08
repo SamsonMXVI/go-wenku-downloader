@@ -6,10 +6,6 @@ import (
 	"strings"
 )
 
-var (
-	Cookie = ""
-)
-
 func GetCookie() error {
 	client := &http.Client{}
 	loginUrl := "https://www.wenku8.net/login.php?do=submit&jumpurl=http%3A%2F%2Fwww.wenku8.net%2Findex.php"
@@ -22,6 +18,7 @@ func GetCookie() error {
 	req, _ := http.NewRequest("POST", loginUrl, strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Cookie", Cookie)
+	req.Header.Set("User-Agent", UserAgent)
 	resp, err := client.Do(req)
 	if err != nil {
 		return err

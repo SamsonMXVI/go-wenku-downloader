@@ -20,6 +20,10 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 		return nil, err
 	}
 
+	if doc.Find(".blocktitle").First().Text() == "出现错误！" {
+		return nil, nil
+	}
+
 	getNovelDetailsDoc(doc, novel)
 
 	return novel, nil

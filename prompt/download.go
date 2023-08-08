@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -57,7 +58,7 @@ func download(novelId int) error {
 
 	// download volume
 	for _, volume := range volumeArray {
-		volumePath := path.Join(downloadPath, volume.Name)
+		volumePath := path.Join(downloadPath, formatFilename(volume.Name))
 		err = downloader.DownloadVolume(volume, volumePath)
 		if err != nil {
 			log.Printf("download volume error %v", err)
@@ -74,11 +75,12 @@ func download(novelId int) error {
 }
 
 func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, coverIndex int, downloadPath string) error {
+	formatedVolumeName := formatFilename(volumeName)
 	var internalImagePath []string
 	// output epub path
-	var epubFilePath string = path.Join(downloadPath, fmt.Sprintf("%s %s.epub", novel.NovelName, volumeName))
+	var epubFilePath string = path.Join(downloadPath, fmt.Sprintf("%s %s.epub", novel.NovelName, formatedVolumeName))
 	// volume path
-	var volumePath string = path.Join(downloadPath, volumeName)
+	var volumePath string = path.Join(downloadPath, formatedVolumeName)
 	var imagePath string = path.Join(volumePath, downloader.ImageFolderName)
 	var coverPath string = path.Join(downloadPath, util.GetUrlLastString(novel.Cover))
 
@@ -134,4 +136,11 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 		return err
 	}
 	return nil
+}
+
+func formatFilename(str string) string {
+	newFilename := strings.ReplaceAll(str, "/", "-")
+	re := regexp.MustCompile(`[<>:"/\\|?*\t]`)
+	newFilename = re.ReplaceAllString(newFilename, "")
+	return newFilename
 }
