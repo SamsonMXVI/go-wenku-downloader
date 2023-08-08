@@ -35,6 +35,7 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 	}
 
 	chaterArray, err := scraper.GetChapterArray(volume)
+	time.Sleep(1 * time.Second) // temp fix rate limit
 
 	if err != nil {
 		return fmt.Errorf("获取章节列表失败")
@@ -51,7 +52,7 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 		}
 
 		err := scraper.GetChapterContent(chapter)
-		time.Sleep(1 * time.Second) // temp fix rate limit
+		time.Sleep(3 * time.Second) // temp fix rate limit
 
 		if err != nil {
 			log.Printf("get chapter content error %v", err)
@@ -72,8 +73,10 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 	progressBar.Finish()
 
 	for _, imageURL := range imageArray {
+		time.Sleep(1 * time.Second) // temp fix rate limit
 		success := false
 		for i := 0; i < 3; i++ {
+
 			err := DownloadImage(imageURL, imageDirPath)
 			if err == nil {
 				success = true
