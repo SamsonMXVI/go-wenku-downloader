@@ -19,7 +19,7 @@
 
 ## 使用方法(Window/MacOS/Linux)
 
-[Release 下载](https://github.com/SamsonMXVI/go-wenku-downloader)
+[Release 下载](https://github.com/SamsonMXVI/go-wenku-downloader/releases)
 
 > windows 直接运行 exe 即可
 
