@@ -33,6 +33,7 @@ require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/bmaupin/go-epub v1.1.0
+	github.com/cavaliergopher/grab/v3 v3.0.1
 	github.com/corpix/uarand v0.2.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.15.0

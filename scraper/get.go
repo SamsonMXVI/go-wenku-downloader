@@ -30,6 +30,10 @@ func Get(url string) (*goquery.Document, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("http request error")
+	}
+
 	// get response
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -73,6 +77,10 @@ func AndroidGet(url string) (*goquery.Document, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("http request error")
+	}
 
 	// get response
 	body, err := io.ReadAll(resp.Body)
