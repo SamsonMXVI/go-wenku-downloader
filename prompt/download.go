@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/bmaupin/go-epub"
 	"github.com/samsonmxvi/go-wenku-downloader/downloader"
@@ -59,7 +58,6 @@ func download(novelId int) error {
 
 	// download volume
 	for _, volume := range volumeArray {
-		time.Sleep(3 * time.Second) // temp fix rate limit
 		volumePath := path.Join(downloadPath, formatFilename(volume.Name))
 		err = downloader.DownloadVolume(volume, volumePath)
 		if err != nil {

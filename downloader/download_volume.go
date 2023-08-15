@@ -21,11 +21,9 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 		return err
 	}
 
-	chaterArray, err := scraper.GetChapterArray(volume)
-	time.Sleep(1 * time.Second) // temp fix rate limit
-
+	chaterArray, err := getChapterArray(volume)
 	if err != nil {
-		return fmt.Errorf("获取章节列表失败")
+		return err
 	}
 
 	progressBar := pb.StartNew(len(chaterArray))
@@ -59,11 +57,26 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 				break
 			} else {
 				time.Sleep(1 * time.Second) // temp fix rate limit
+				continue
 			}
 		}
 	}
 
 	return nil
+}
+
+func getChapterArray(volume *scraper.Volume) ([]*scraper.Chapter, error) {
+	for i := 0; i < 3; i++ {
+		chaterArray, err := scraper.GetChapterArray(volume)
+		if err == nil {
+			time.Sleep(1 * time.Second)
+			return chaterArray, nil
+		} else {
+			time.Sleep(3 * time.Second) // temp fix rate limit
+			continue
+		}
+	}
+	return nil, fmt.Errorf("获取章节列表失败")
 }
 
 func getChaterContent(chapter *scraper.Chapter) {
