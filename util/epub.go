@@ -41,6 +41,16 @@ func AddImage(epub *epub.Epub, filePath string) (string, error) {
 	return imgPath, nil
 }
 
+func AddCover(epub *epub.Epub, filePath string) (string, error) {
+	str := strings.Split(GetUrlLastString(filePath), ".")
+	imgPath, err := epub.AddImage(filePath, "cover."+str[1])
+	if err != nil {
+		log.Fatal(err)
+		return "", err
+	}
+	return imgPath, nil
+}
+
 func AddImageToXhtml(internalPath string, xhtml string) string {
 	return fmt.Sprintf("%v<img src='%v'/>", xhtml, internalPath)
 }

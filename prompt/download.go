@@ -78,7 +78,7 @@ func download(novelId int) error {
 
 func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, coverIndex int, downloadPath string) error {
 	formatedVolumeName := formatFilename(volumeName)
-	var internalImagePath []string
+	var imagePathList []string
 	// output epub path
 	var epubFilePath string = path.Join(downloadPath, fmt.Sprintf("%s %s.epub", novel.NovelName, formatedVolumeName))
 	// volume path
@@ -91,11 +91,11 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	epub.SetAuthor(novel.Author)
 
 	// add coverImage to epub
-	internalConverPath, err := util.AddImage(epub, coverPath)
+	_, err := util.AddImage(epub, coverPath)
 	if err != nil {
 		return fmt.Errorf("add image to epub failed")
 	}
-	internalImagePath = append(internalImagePath, internalConverPath)
+	imagePathList = append(imagePathList, coverPath)
 
 	for i := 1; i <= chapterCount; i++ {
 		file, err := os.ReadFile(path.Join(volumePath, fmt.Sprintf("%d.json", i)))
@@ -118,7 +118,7 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 				imgFile := path.Join(imagePath, util.GetUrlLastString(img))
 				internalPath, _ := util.AddImage(epub, imgFile)
 				xhtml = util.AddImageToXhtml(internalPath, xhtml)
-				internalImagePath = append(internalImagePath, internalPath)
+				imagePathList = append(imagePathList, imgFile)
 			}
 		}
 		err = util.AddSectionXhtml(epub, chapter.Title, xhtml)
@@ -126,12 +126,12 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 			return err
 		}
 	}
-
-	tempConverPath := internalImagePath[0]
-	if coverIndex < len(internalImagePath) {
-		tempConverPath = internalImagePath[coverIndex]
+	tempConverPath := imagePathList[0]
+	if coverIndex < len(imagePathList) {
+		tempConverPath = imagePathList[coverIndex]
 	}
-	epub.SetCover(tempConverPath, "")
+	internalCoverPath, _ := util.AddCover(epub, tempConverPath)
+	epub.SetCover(internalCoverPath, "")
 
 	err = epub.Write(epubFilePath)
 	if err != nil {
