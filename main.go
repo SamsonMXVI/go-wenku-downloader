@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/corpix/uarand"
 	"github.com/fatih/color"
 	"github.com/samsonmxvi/go-wenku-downloader/prompt"
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
@@ -24,6 +25,7 @@ func main() {
 	log.SetOutput(multiWriter)
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
+	scraper.UserAgent = uarand.GetRandom()
 	err = scraper.GetCookie()
 	if err != nil {
 		c := color.New(color.FgRed)

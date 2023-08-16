@@ -20,6 +20,7 @@ func Get(url string) (*goquery.Document, error) {
 
 	// set cookie header
 	req.Header.Set("Cookie", Cookie)
+	req.Header.Add("User-Agent", UserAgent)
 
 	// send request
 	client := http.DefaultClient
@@ -28,6 +29,10 @@ func Get(url string) (*goquery.Document, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("http request error")
+	}
 
 	// get response
 	body, err := io.ReadAll(resp.Body)
@@ -72,6 +77,10 @@ func AndroidGet(url string) (*goquery.Document, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("http request error")
+	}
 
 	// get response
 	body, err := io.ReadAll(resp.Body)

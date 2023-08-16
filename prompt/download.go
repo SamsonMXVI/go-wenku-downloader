@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -57,7 +58,7 @@ func download(novelId int) error {
 
 	// download volume
 	for _, volume := range volumeArray {
-		volumePath := path.Join(downloadPath, volume.Name)
+		volumePath := path.Join(downloadPath, formatFilename(volume.Name))
 		err = downloader.DownloadVolume(volume, volumePath)
 		if err != nil {
 			log.Printf("download volume error %v", err)
@@ -74,11 +75,12 @@ func download(novelId int) error {
 }
 
 func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, coverIndex int, downloadPath string) error {
-	var internalImagePath []string
+	formatedVolumeName := formatFilename(volumeName)
+	var imagePathList []string
 	// output epub path
-	var epubFilePath string = path.Join(downloadPath, fmt.Sprintf("%s %s.epub", novel.NovelName, volumeName))
+	var epubFilePath string = path.Join(downloadPath, fmt.Sprintf("%s %s.epub", novel.NovelName, formatedVolumeName))
 	// volume path
-	var volumePath string = path.Join(downloadPath, volumeName)
+	var volumePath string = path.Join(downloadPath, formatedVolumeName)
 	var imagePath string = path.Join(volumePath, downloader.ImageFolderName)
 	var coverPath string = path.Join(downloadPath, util.GetUrlLastString(novel.Cover))
 
@@ -87,11 +89,11 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	epub.SetAuthor(novel.Author)
 
 	// add coverImage to epub
-	internalConverPath, err := util.AddImage(epub, coverPath)
+	_, err := util.AddImage(epub, coverPath)
 	if err != nil {
 		return fmt.Errorf("add image to epub failed")
 	}
-	internalImagePath = append(internalImagePath, internalConverPath)
+	imagePathList = append(imagePathList, coverPath)
 
 	for i := 1; i <= chapterCount; i++ {
 		file, err := os.ReadFile(path.Join(volumePath, fmt.Sprintf("%d.json", i)))
@@ -114,7 +116,7 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 				imgFile := path.Join(imagePath, util.GetUrlLastString(img))
 				internalPath, _ := util.AddImage(epub, imgFile)
 				xhtml = util.AddImageToXhtml(internalPath, xhtml)
-				internalImagePath = append(internalImagePath, internalPath)
+				imagePathList = append(imagePathList, imgFile)
 			}
 		}
 		err = util.AddSectionXhtml(epub, chapter.Title, xhtml)
@@ -122,16 +124,23 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 			return err
 		}
 	}
-
-	tempConverPath := internalImagePath[0]
-	if coverIndex < len(internalImagePath) {
-		tempConverPath = internalImagePath[coverIndex]
+	tempConverPath := imagePathList[0]
+	if coverIndex < len(imagePathList) {
+		tempConverPath = imagePathList[coverIndex]
 	}
-	epub.SetCover(tempConverPath, "")
+	internalCoverPath, _ := util.AddCover(epub, tempConverPath)
+	epub.SetCover(internalCoverPath, "")
 
 	err = epub.Write(epubFilePath)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func formatFilename(str string) string {
+	newFilename := strings.ReplaceAll(str, "/", "-")
+	re := regexp.MustCompile(`[<>:"/\\|?*\t]`)
+	newFilename = re.ReplaceAllString(newFilename, "")
+	return newFilename
 }
