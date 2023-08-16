@@ -6,8 +6,6 @@ import (
 	"os"
 	"path"
 	"strconv"
-	"strings"
-	"time"
 
 	"github.com/samsonmxvi/go-wenku-downloader/downloader"
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
@@ -21,16 +19,13 @@ func downloadAll(novelId int) error {
 	}
 
 	// get novel metadata
-	novel, err := scraper.GetNovelDetails(novelId)
+	novel, err := promptNovelDetails(int(novelId))
 	if err != nil {
 		return fmt.Errorf("获取小说信息失败: %e", err)
-	} else if novel == nil {
-		return nil
 	}
 
 	// download novel metadata and coverImg
 	downloader.DownloadNovelMetadata(novel, downloadPath)
-	time.Sleep(1 * time.Second)
 
 	// download cover image
 	success := false
@@ -44,7 +39,6 @@ func downloadAll(novelId int) error {
 	if !success {
 		return fmt.Errorf("download cover image failed %v", err)
 	}
-	time.Sleep(1 * time.Second)
 
 	// get selected volume list
 	volumeArray, err := scraper.GetNovelVolumeArray(novel.CatalogueUrl)
@@ -52,21 +46,17 @@ func downloadAll(novelId int) error {
 		return fmt.Errorf("下载小说卷信息失败: %e", err)
 	}
 
-	time.Sleep(1 * time.Second)
-
 	// get coverIndex from input
 	converIndex := 1
 
 	// download volume
 	for _, volume := range volumeArray {
-		time.Sleep(3 * time.Second)
-		volumeName := strings.ReplaceAll(volume.Name, "/", "")
-		volumePath := path.Join(downloadPath, volumeName)
+		volumePath := path.Join(downloadPath, formatFilename(volume.Name))
 		if _, err := os.Stat(volumePath); !os.IsNotExist(err) {
 			// return nil
 			continue
 		}
-		err = downloader.DownloadVolumeAll(volume, volumePath)
+		err = downloader.DownloadVolume(volume, volumePath)
 		if err != nil {
 			log.Printf("download volume error %v", err)
 			return fmt.Errorf("下载小说卷失败: %e", err)

@@ -82,7 +82,7 @@ func getChapterArray(volume *scraper.Volume) ([]*scraper.Chapter, error) {
 			return chaterArray, nil
 		} else {
 			log.Printf("获取章节列表失败 %v, 重试第%v次 \n", err, i)
-			time.Sleep(3 * time.Second) // temp fix rate limit
+			time.Sleep(6 * time.Second) // temp fix rate limit
 			continue
 		}
 	}
@@ -97,7 +97,7 @@ func getChaterContent(chapter *scraper.Chapter) error {
 			time.Sleep(1 * time.Second)
 			return nil
 		} else {
-			time.Sleep(3 * time.Second) // temp fix rate limit
+			time.Sleep(6 * time.Second) // temp fix rate limit
 			log.Printf("获取章节内容失败 %v, 重试第%v次 \n", err, i)
 			continue
 		}
