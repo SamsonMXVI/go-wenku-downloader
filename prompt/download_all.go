@@ -21,7 +21,8 @@ func downloadAll(novelId int) error {
 	// get novel metadata
 	novel, err := promptNovelDetails(int(novelId))
 	if err != nil {
-		return fmt.Errorf("获取小说信息失败: %e", err)
+		fmt.Printf("获取小说信息失败: %e \n", err)
+		return nil
 	}
 
 	// download novel metadata and coverImg

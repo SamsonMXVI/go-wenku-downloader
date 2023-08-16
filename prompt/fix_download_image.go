@@ -3,6 +3,7 @@ package prompt
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path"
 	"strconv"
@@ -57,6 +58,16 @@ func FixDownloadImage(novelId int) error {
 
 				if len(chapter.Content.Images) > 0 {
 					for _, imgUrl := range chapter.Content.Images {
+
+						isWenku8Source := strings.Contains(imgUrl, "wenku8.com")
+						isTrue := strings.Contains(imgUrl, "sky-fire.com")
+						fmt.Printf("istrue %v", isTrue)
+						if isTrue {
+							continue
+						}
+						if !isWenku8Source {
+							log.Printf("is not wenku8 source %v", imgUrl)
+						}
 						fmt.Printf("正在修复图片 %v %v \n", jsonPath, imgUrl)
 						for i := 0; i < 3; i++ {
 							err := downloader.DownloadImage(imgUrl, path.Join(volumePath, downloader.ImageFolderName))
