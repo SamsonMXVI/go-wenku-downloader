@@ -18,6 +18,7 @@ const (
 	SearchNovels
 	DownloadNovel
 	DownloadAll
+	FixAllImage
 	DoNothing
 )
 
@@ -26,6 +27,7 @@ var QuestionsText = []string{
 	"搜索小说",
 	"下载小说",
 	"下载全部",
+	"修复图片",
 	"什么也不做",
 }
 
@@ -117,6 +119,37 @@ func questionTwo(question Questions) {
 
 			log.Printf("downloading %d \n", index)
 			err := downloadAll(index)
+			if err != nil {
+				log.Printf("%v \n", err.Error())
+				os.Exit(1)
+			}
+			if endIndex != 0 && index == endIndex {
+				log.Println("success")
+				return
+			}
+			index += 1
+		}
+	case FixAllImage:
+		str, err := getInputString("id-id")
+		if err != nil {
+			log.Printf("%v \n", err.Error())
+			return
+		}
+		stEnd := strings.Split(str, "-")
+
+		index, err := strconv.Atoi(stEnd[0])
+		if err != nil {
+			log.Printf("%v \n", err.Error())
+			return
+		}
+
+		endIndex, err := strconv.Atoi(stEnd[1])
+		if err != nil {
+			log.Printf("%v \n", err.Error())
+			return
+		}
+		for {
+			err := FixDownloadImage(index)
 			if err != nil {
 				log.Printf("%v \n", err.Error())
 				os.Exit(1)
