@@ -1,6 +1,7 @@
 package scraper
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -21,7 +22,7 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 	}
 
 	if doc.Find(".blocktitle").First().Text() == "出现错误！" {
-		return nil, nil
+		return nil, fmt.Errorf("没有这本小说")
 	}
 
 	getNovelDetailsDoc(doc, novel)

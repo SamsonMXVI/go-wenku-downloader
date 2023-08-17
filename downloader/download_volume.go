@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
@@ -13,7 +14,7 @@ import (
 	"gopkg.in/cheggaaa/pb.v2"
 )
 
-func DownloadVolume(volume *scraper.Volume, dirPath string) error {
+func DownloadVolume(volume *scraper.Volume, dirPath string, onlyWenku8Img bool) error {
 	var imageArray []string
 	imageDirPath := path.Join(dirPath, ImageFolderName)
 
@@ -55,14 +56,18 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 	progressBar.Finish()
 
 	for _, imageURL := range imageArray {
+		isWenku8Source := strings.Contains(imageURL, "wenku8.com")
+		if !isWenku8Source && onlyWenku8Img {
+			continue
+		}
 		success := false
-		for i := 0; i < 3; i++ {
+		for i := 0; i < RetryTimes; i++ {
 			err := DownloadImage(imageURL, imageDirPath)
 			if err == nil {
 				success = true
 				break
 			} else {
-				time.Sleep(3 * time.Second) // temp fix rate limit
+				time.Sleep(RetryTimer) // temp fix rate limit
 				continue
 			}
 		}
@@ -75,14 +80,14 @@ func DownloadVolume(volume *scraper.Volume, dirPath string) error {
 }
 
 func getChapterArray(volume *scraper.Volume) ([]*scraper.Chapter, error) {
-	for i := 0; i < 3; i++ {
+	for i := 0; i < RetryTimes; i++ {
 		chaterArray, err := scraper.GetChapterArray(volume)
 		if err == nil {
-			time.Sleep(1 * time.Second)
+			time.Sleep(DownloadTimer)
 			return chaterArray, nil
 		} else {
 			log.Printf("获取章节列表失败 %v, 重试第%v次 \n", err, i)
-			time.Sleep(6 * time.Second) // temp fix rate limit
+			time.Sleep(RetryTimer) // temp fix rate limit
 			continue
 		}
 	}
@@ -91,13 +96,13 @@ func getChapterArray(volume *scraper.Volume) ([]*scraper.Chapter, error) {
 
 func getChaterContent(chapter *scraper.Chapter) error {
 	var err error
-	for i := 0; i < 3; i++ {
+	for i := 0; i < RetryTimes; i++ {
 		err = scraper.GetChapterContent(chapter)
 		if err == nil {
-			time.Sleep(1 * time.Second)
+			time.Sleep(DownloadTimer)
 			return nil
 		} else {
-			time.Sleep(6 * time.Second) // temp fix rate limit
+			time.Sleep(RetryTimer) // temp fix rate limit
 			log.Printf("获取章节内容失败 %v, 重试第%v次 \n", err, i)
 			continue
 		}

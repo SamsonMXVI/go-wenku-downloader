@@ -57,7 +57,7 @@ func downloadAll(novelId int) error {
 			// return nil
 			continue
 		}
-		err = downloader.DownloadVolume(volume, volumePath)
+		err = downloader.DownloadVolume(volume, volumePath, true)
 		if err != nil {
 			log.Printf("download volume error %v", err)
 			return fmt.Errorf("下载小说卷失败: %e", err)

@@ -2,6 +2,7 @@ package downloader
 
 import (
 	"fmt"
+	"os"
 	"path"
 
 	"github.com/samsonmxvi/go-wenku-downloader/util"
@@ -15,7 +16,13 @@ func DownloadImage(url string, dirPath string) error {
 
 	// check file already download
 	if util.CheckFileExist(filePath) {
-		return nil
+		// 获取文件信息
+		fileInfo, _ := os.Stat(filePath)
+		// 获取文件大小
+		fileSize := fileInfo.Size()
+		if fileSize > 0 {
+			return nil
+		}
 	}
 
 	// check dir if not exit create
