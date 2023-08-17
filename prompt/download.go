@@ -56,10 +56,16 @@ func download(novelId int) error {
 		return fmt.Errorf("prompt failed %v", err)
 	}
 
+	// get onlyWenku8Img
+	onlyWenku8Img, err := getInputBool("是否只下载wenku8的图片(推荐使用默认数值, 非文库图片资源大多数情况已失效), 默认:y(y/n)", true)
+	if err != nil {
+		return fmt.Errorf("prompt failed %v", err)
+	}
+
 	// download volume
 	for _, volume := range volumeArray {
 		volumePath := path.Join(downloadPath, formatFilename(volume.Name))
-		err = downloader.DownloadVolume(volume, volumePath)
+		err = downloader.DownloadVolume(volume, volumePath, onlyWenku8Img)
 		if err != nil {
 			log.Printf("download volume error %v", err)
 			continue
@@ -114,6 +120,9 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 		if len(chapter.Content.Images) != 0 {
 			for _, img := range chapter.Content.Images {
 				imgFile := path.Join(imagePath, util.GetUrlLastString(img))
+				if !util.CheckFileExist(imgFile) {
+					continue
+				}
 				internalPath, _ := util.AddImage(epub, imgFile)
 				xhtml = util.AddImageToXhtml(internalPath, xhtml)
 				imagePathList = append(imagePathList, imgFile)

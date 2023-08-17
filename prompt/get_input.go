@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -116,4 +117,34 @@ func getSelectedIndex(label string, itmes []string) (int, error) {
 		return 0, err
 	}
 	return selectedIndex, nil
+}
+
+func getInputBool(label string, defaultValue bool) (bool, error) {
+	validate := func(input string) error {
+		if input == "y" || input == "n" || input == "" {
+			return nil
+		} else {
+			return fmt.Errorf("只能填写y, n")
+		}
+	}
+
+	prompt := promptui.Prompt{
+		Label:    label,
+		Validate: validate,
+		Stdout:   &noBellStdout{},
+	}
+
+	result, err := prompt.Run()
+
+	if err != nil {
+		return false, err
+	}
+
+	if result == "y" {
+		return true, nil
+	} else if result == "n" {
+		return false, nil
+	} else {
+		return defaultValue, nil
+	}
 }

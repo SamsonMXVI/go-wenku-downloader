@@ -2,6 +2,7 @@ package downloader
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/cavaliergopher/grab/v3"
@@ -14,7 +15,7 @@ func Grab(path string, url string) error {
 	req, _ := grab.NewRequest(path, url)
 
 	// start download
-	fmt.Printf("Downloading %v...\n", req.URL())
+	log.Printf("正在下载 %v...\n", req.URL())
 	resp := client.Do(req)
 
 	// start UI loop
