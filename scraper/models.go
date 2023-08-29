@@ -56,3 +56,8 @@ type PageResult struct {
 	TotalPage  string   `json:"total_page"`
 	NovelArray []*Novel `json:"result"`
 }
+
+type Catalogue struct {
+	Volume       Volume     `json:"volume"`
+	ChapterArray []*Chapter `json:"chapter"`
+}
