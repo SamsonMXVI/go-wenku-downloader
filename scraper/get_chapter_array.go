@@ -11,6 +11,10 @@ func GetChapterArray(volume *Volume) ([]*Chapter, error) {
 	if err != nil {
 		return nil, err
 	}
+	return getChapterArrayFromDoc(doc, volume)
+}
+
+func getChapterArrayFromDoc(doc *goquery.Document, volume *Volume) ([]*Chapter, error) {
 	chapterArray := make([]*Chapter, 0)
 	rows := doc.Find("tbody").Children()
 	insertMap(rows, &chapterArray, volume.RowNumber, volume.EndRow, volume.Name, volume.CatalogueUrl)

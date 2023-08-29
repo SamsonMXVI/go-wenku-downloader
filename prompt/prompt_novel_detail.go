@@ -1,16 +1,31 @@
 package prompt
 
 import (
+	"encoding/json"
+	"os"
+	"path"
+	"strconv"
+
 	"github.com/fatih/color"
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
+	"github.com/samsonmxvi/go-wenku-downloader/util"
 )
 
-func promptNovelDetails(novelId int) (*scraper.Novel, error) {
-	novel, err := scraper.GetNovelDetails(novelId)
-	if err != nil {
-		return nil, err
+func getNovelDetails(novelId int) (novel *scraper.Novel, err error) {
+	novel = &scraper.Novel{}
+	filePath := path.Join(strconv.Itoa(novelId), "metadata.json")
+	if util.CheckFileExist(filePath) {
+		getChapterContentFromFile(filePath, novel)
+	} else {
+		novel, err = scraper.GetNovelDetails(novelId)
+		if err != nil {
+			return nil, err
+		}
 	}
+	return novel, nil
+}
 
+func promptNovelDetails(novel *scraper.Novel) {
 	c := color.New(color.FgCyan)
 	c.Printf("名称：%v\n", novel.NovelName)
 	c.Printf("简介：%v\n", novel.Desc)
@@ -20,6 +35,9 @@ func promptNovelDetails(novelId int) (*scraper.Novel, error) {
 	c.Printf("最新章节：%v\n", novel.RecentChapter)
 	c.Printf("全文长度: %v\n", novel.Length)
 	c.Printf("上次更新时间：%v\n", novel.LastUpdateTime)
+}
 
-	return novel, nil
+func getChapterContentFromFile(path string, novel *scraper.Novel) {
+	file, _ := os.ReadFile(path)
+	_ = json.Unmarshal([]byte(file), novel)
 }

@@ -5,16 +5,16 @@ import (
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
 )
 
-func promptVolumeSelect(catalogueUrl string) ([]*scraper.Volume, error) {
+func promptVolumeSelect(catalogueUrl string) ([]*scraper.Catalogue, error) {
 	var volumeOptions []string
-	var selectedVolume []*scraper.Volume
+	var selectedCatalogue []*scraper.Catalogue
 
-	volumeArray, err := scraper.GetNovelVolumeArray(catalogueUrl)
+	catalogueArray, err := scraper.GetCatalogueArray(catalogueUrl)
 	if err != nil {
 		return nil, err
 	}
-	for _, volume := range volumeArray {
-		volumeOptions = append(volumeOptions, volume.Name)
+	for _, catalogue := range catalogueArray {
+		volumeOptions = append(volumeOptions, catalogue.Volume.Name)
 	}
 	volumeSelected := []string{}
 	prompt := &survey.MultiSelect{
@@ -28,11 +28,11 @@ func promptVolumeSelect(catalogueUrl string) ([]*scraper.Volume, error) {
 	}
 
 	for _, v := range volumeSelected {
-		for _, volume := range volumeArray {
-			if v == volume.Name {
-				selectedVolume = append(selectedVolume, volume)
+		for _, catalogue := range catalogueArray {
+			if v == catalogue.Volume.Name {
+				selectedCatalogue = append(selectedCatalogue, catalogue)
 			}
 		}
 	}
-	return selectedVolume, nil
+	return selectedCatalogue, nil
 }

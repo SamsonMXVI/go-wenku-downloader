@@ -23,10 +23,12 @@ func download(novelId int) error {
 	}
 
 	// get novel metadata
-	novel, err := promptNovelDetails(int(novelId))
+	novel, err := getNovelDetails(int(novelId))
 	if err != nil {
-		return fmt.Errorf("获取小说信息失败: %e", err)
+		fmt.Printf("获取小说信息失败: %e \n", err)
+		return nil
 	}
+	promptNovelDetails(novel)
 
 	// download novel metadata and coverImg
 	downloader.DownloadNovelMetadata(novel, downloadPath)
@@ -45,7 +47,7 @@ func download(novelId int) error {
 	}
 
 	// get selected volume list
-	volumeArray, err := promptVolumeSelect(novel.CatalogueUrl)
+	catalogueArray, err := promptVolumeSelect(novel.CatalogueUrl)
 	if err != nil {
 		return fmt.Errorf("下载小说卷信息失败: %e", err)
 	}
@@ -63,14 +65,14 @@ func download(novelId int) error {
 	}
 
 	// download volume
-	for _, volume := range volumeArray {
-		volumePath := path.Join(downloadPath, formatFilename(volume.Name))
-		err = downloader.DownloadVolume(volume, volumePath, onlyWenku8Img)
+	for _, catalogue := range catalogueArray {
+		volumePath := path.Join(downloadPath, formatFilename(catalogue.Volume.Name))
+		err = downloader.DownloadVolume(catalogue, volumePath, onlyWenku8Img)
 		if err != nil {
 			log.Printf("download volume error %v", err)
 			continue
 		}
-		err = createEpub(novel, volume.Name, volume.ChapterCount, converIndex, downloadPath)
+		err = createEpub(novel, catalogue.Volume.Name, catalogue.Volume.ChapterCount, converIndex, downloadPath)
 		if err != nil {
 			log.Printf("create epub failed: %v", err)
 			continue

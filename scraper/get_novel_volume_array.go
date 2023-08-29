@@ -10,7 +10,10 @@ func GetNovelVolumeArray(catalogueUrl string) ([]*Volume, error) {
 	if err != nil {
 		return nil, err
 	}
+	return getVolumeArrayFromDoc(doc, catalogueUrl)
+}
 
+func getVolumeArrayFromDoc(doc *goquery.Document, catalogueUrl string) ([]*Volume, error) {
 	// get Index, Name, RowNumber, CatalogueUrl, create volume
 	volumeArray := make([]*Volume, 0)
 	doc.Find("table td[colspan]").Each(func(i int, s *goquery.Selection) {

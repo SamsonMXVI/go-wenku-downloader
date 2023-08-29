@@ -14,7 +14,7 @@ import (
 	"gopkg.in/cheggaaa/pb.v2"
 )
 
-func DownloadVolume(volume *scraper.Volume, dirPath string, onlyWenku8Img bool) error {
+func DownloadVolume(catalogue *scraper.Catalogue, dirPath string, onlyWenku8Img bool) error {
 	var imageArray []string
 	imageDirPath := path.Join(dirPath, ImageFolderName)
 
@@ -22,14 +22,11 @@ func DownloadVolume(volume *scraper.Volume, dirPath string, onlyWenku8Img bool) 
 		return err
 	}
 
-	chaterArray, err := getChapterArray(volume)
-	if err != nil {
-		return err
-	}
+	chaterArray := catalogue.ChapterArray
 
 	progressBar := pb.StartNew(len(chaterArray))
 	for i, chapter := range chaterArray {
-		progressBar.SetTemplateString(getChapterTemplateString(volume.Name, i))
+		progressBar.SetTemplateString(getChapterTemplateString(catalogue.Volume.Name, i))
 		// check file exist
 		chapterFile := path.Join(dirPath, fmt.Sprintf("%d.json", chapter.Index))
 		if util.CheckFileExist(chapterFile) {
