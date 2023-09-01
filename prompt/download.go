@@ -67,7 +67,7 @@ func download(novelId int) error {
 	// download volume
 	for _, catalogue := range catalogueArray {
 		volumePath := path.Join(downloadPath, formatFilename(catalogue.Volume.Name))
-		err = downloader.DownloadVolume(catalogue, volumePath, onlyWenku8Img)
+		_, err := downloader.DownloadVolume(catalogue, volumePath, onlyWenku8Img)
 		if err != nil {
 			log.Printf("download volume error %v", err)
 			continue

@@ -11,6 +11,6 @@ func TestDownloadVolume(t *testing.T) {
 	volumeArray, err := scraper.GetCatalogueArray("https://www.wenku8.net/novel/1/1973/index.htm")
 	require.NoError(t, err)
 	require.NotEmpty(t, volumeArray)
-	err = DownloadVolume(volumeArray[0], "./", true)
+	_, err = DownloadVolume(volumeArray[0], "./", true)
 	require.NoError(t, err)
 }

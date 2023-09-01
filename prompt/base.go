@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/samsonmxvi/go-wenku-downloader/scraper"
 	"github.com/samsonmxvi/go-wenku-downloader/scraper/enums"
 )
 
@@ -19,6 +21,7 @@ const (
 	DownloadNovel
 	DownloadAll
 	FixAllImage
+	UpdateLatest
 	DoNothing
 )
 
@@ -28,6 +31,7 @@ var QuestionsText = []string{
 	"下载小说",
 	"下载全部",
 	"修复图片",
+	"更新最近更新轻小说",
 	"什么也不做",
 }
 
@@ -159,6 +163,51 @@ func questionTwo(question Questions) {
 				return
 			}
 			index += 1
+		}
+	case UpdateLatest:
+		str, err := getInputString("更新到第几页")
+		if err != nil {
+			log.Printf("%v \n", err.Error())
+			return
+		}
+
+		index, err := strconv.Atoi(str)
+		if err != nil {
+			log.Printf("%v \n", err.Error())
+			return
+		}
+		var pageResultList []*scraper.PageResult
+		for i := 1; i <= index; i++ {
+			for i := 0; i < 3; i++ {
+				pageResult, err := scraper.GetTop(enums.TopSoftUpdateToday, "1")
+				if err != nil {
+					log.Printf("%v \n", err.Error())
+					time.Sleep(3 * time.Second)
+				} else if err == nil {
+					pageResultList = append(pageResultList, pageResult)
+					time.Sleep(3 * time.Second)
+					break
+				}
+			}
+		}
+		for _, pageResult := range pageResultList {
+			for _, novel := range pageResult.NovelArray {
+				re := regexp.MustCompile(`(\d+)\.htm`)
+				match := re.FindStringSubmatch(novel.CatalogueUrl)
+				if len(match) > 1 {
+					mNovelId, err := strconv.Atoi(match[1])
+					if err != nil {
+						log.Printf("%v \n", err.Error())
+						return
+					}
+					err = downloadAll(mNovelId)
+					if err != nil {
+						log.Printf("%v \n", err.Error())
+						os.Exit(1)
+					}
+				}
+
+			}
 		}
 
 	case DoNothing:

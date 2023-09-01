@@ -1,13 +1,15 @@
 package scraper
 
 import (
-	"fmt"
+	"errors"
 	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+var ErrorNoNovel error = errors.New("没有这本小说")
 
 // GetNovelDetails retrieves the novel details based on novelId
 func GetNovelDetails(novelId int) (*Novel, error) {
@@ -22,7 +24,7 @@ func GetNovelDetails(novelId int) (*Novel, error) {
 	}
 
 	if doc.Find(".blocktitle").First().Text() == "出现错误！" {
-		return nil, fmt.Errorf("没有这本小说")
+		return nil, ErrorNoNovel
 	}
 
 	getNovelDetailsDoc(doc, novel)

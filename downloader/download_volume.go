@@ -14,33 +14,43 @@ import (
 	"gopkg.in/cheggaaa/pb.v2"
 )
 
-func DownloadVolume(catalogue *scraper.Catalogue, dirPath string, onlyWenku8Img bool) error {
+func DownloadVolume(catalogue *scraper.Catalogue, dirPath string, onlyWenku8Img bool) (updated bool, err error) {
 	var imageArray []string
 	imageDirPath := path.Join(dirPath, ImageFolderName)
+	needGetFromOnline := true
 
 	if err := util.CheckDir(dirPath); err != nil {
-		return err
+		return false, err
 	}
 
 	chaterArray := catalogue.ChapterArray
 
 	progressBar := pb.StartNew(len(chaterArray))
 	for i, chapter := range chaterArray {
+		needGetFromOnline = true
+
 		progressBar.SetTemplateString(getChapterTemplateString(catalogue.Volume.Name, i))
 		// check file exist
 		chapterFile := path.Join(dirPath, fmt.Sprintf("%d.json", chapter.Index))
 		if util.CheckFileExist(chapterFile) {
-			getChapterContentFromFile(chapterFile, chapter)
-		} else {
+			tempChapter := &scraper.Chapter{}
+			getChapterContentFromFile(chapterFile, tempChapter)
+			if tempChapter.Title == chapter.Title {
+				chapter = tempChapter
+				needGetFromOnline = false
+			}
+		}
+
+		if needGetFromOnline {
 			err := getChaterContent(chapter)
 			if err != nil {
-				return err
+				return false, err
 			}
 			// save chapter to file
 			err = DownloadChapter(chapter, dirPath)
 			if err != nil {
 				log.Printf("download chapter error %v \n", err)
-				return err
+				return false, err
 			}
 		}
 
@@ -69,11 +79,15 @@ func DownloadVolume(catalogue *scraper.Catalogue, dirPath string, onlyWenku8Img 
 			}
 		}
 		if !success {
-			return fmt.Errorf("图片下载错误")
+			return false, fmt.Errorf("图片下载错误")
 		}
 	}
 
-	return nil
+	if needGetFromOnline {
+		return true, nil
+	} else {
+		return false, nil
+	}
 }
 
 func getChapterArray(volume *scraper.Volume) ([]*scraper.Chapter, error) {
