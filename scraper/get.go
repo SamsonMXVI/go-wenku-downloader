@@ -19,7 +19,9 @@ func Get(url string) (*goquery.Document, error) {
 	}
 
 	// set cookie header
-	req.Header.Set("Cookie", Cookie)
+	// req.Header.Set("Cookie", Cookie)
+	// req.Header.Add("User-Agent", UserAgent)
+	req.Header.Add("Cookie", Cookie)
 	req.Header.Add("User-Agent", UserAgent)
 
 	// send request

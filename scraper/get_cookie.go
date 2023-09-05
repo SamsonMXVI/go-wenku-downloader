@@ -1,6 +1,7 @@
 package scraper
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -16,9 +17,9 @@ func GetCookie() error {
 	form.Add("action", "login")
 	form.Add("submit", "%26%23160%3B%B5%C7%26%23160%3B%26%23160%3B%C2%BC%26%23160%3B")
 	req, _ := http.NewRequest("POST", loginUrl, strings.NewReader(form.Encode()))
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Cookie", Cookie)
-	req.Header.Set("User-Agent", UserAgent)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Cookie", Cookie)
+	req.Header.Add("User-Agent", UserAgent)
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
@@ -30,7 +31,7 @@ func GetCookie() error {
 		newCookie += cookie.Name + "=" + cookie.Value + ";"
 	}
 	if len(newCookie) > 0 {
-		Cookie = newCookie
+		Cookie = fmt.Sprintf("%s;%s", Cookie, newCookie)
 	}
 	return nil
 }

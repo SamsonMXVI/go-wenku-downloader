@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/corpix/uarand"
 	"github.com/fatih/color"
 	"github.com/samsonmxvi/go-wenku-downloader/prompt"
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
@@ -25,13 +24,18 @@ func main() {
 	log.SetOutput(multiWriter)
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
-	scraper.UserAgent = uarand.GetRandom()
+	err = scraper.GetCFCookie()
+	if err != nil {
+		c := color.New(color.FgRed)
+		c.Printf("绕过CloudFlare失败 %v \n", err)
+	}
 	err = scraper.GetCookie()
 	if err != nil {
 		c := color.New(color.FgRed)
 		c.Printf("登陆失败 %v \n", err)
 		c.Println("未登录-(查询/热门小说)功能将无法使用")
 	}
+	println(scraper.Cookie)
 	app := &cli.App{
 		Name:    "Go轻小说文库下载器",
 		Usage:   "在终端实现轻小说的下载",
