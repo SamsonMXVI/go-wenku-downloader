@@ -1,6 +1,7 @@
 package scraper
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/PuerkitoBio/goquery"
@@ -24,10 +25,10 @@ func getTableGridNovel(doc *goquery.Document) ([]*Novel, error) {
 			catalogueUrl string
 		)
 
-		novelLinkRe := regexp.MustCompile(`href="(https://www\.wenku8\.net/book/\d+\.htm)"`)
+		novelLinkRe := regexp.MustCompile(`href="(/book/\d+\.htm)"`)
 		novelLinkMatch := novelLinkRe.FindStringSubmatch(divHtml)
 		if len(novelLinkMatch) > 1 {
-			catalogueUrl = novelLinkMatch[1]
+			catalogueUrl = fmt.Sprintf("https://www.wenku8.net%s", novelLinkMatch[1])
 		}
 
 		novelNameRe := regexp.MustCompile(`title="(.*?)"`)

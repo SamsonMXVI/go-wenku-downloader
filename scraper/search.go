@@ -30,7 +30,7 @@ func Search(str string, searchType enums.SearchType, page string) (*PageResult, 
 
 	if docText := doc.Text(); !strings.Contains(docText, "搜索结果") {
 		novelId := 0
-		re := regexp.MustCompile(`https://www\.wenku8\.net/modules/article/uservote\.php\?id=(\d+)`)
+		re := regexp.MustCompile(`/modules/article/uservote\.php\?id=(\d+)`)
 		docHtml, _ := doc.Html()
 		match := re.FindStringSubmatch(docHtml)
 		if len(match) > 1 {

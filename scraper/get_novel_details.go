@@ -86,10 +86,10 @@ func getNovelDetailsDoc(doc *goquery.Document, novel *Novel) {
 
 	// Get catalogueUrl
 	html, _ := doc.Find("#content").Children().First().Html()
-	re := regexp.MustCompile(`<a href="(https://www\.wenku8\.net/novel/[^"]+)">小说目录</a>`)
+	re := regexp.MustCompile(`<a href="(/novel/[^"]+)">小说目录</a>`)
 	match := re.FindStringSubmatch(html)
 	if match != nil {
-		novel.CatalogueUrl = match[1]
+		novel.CatalogueUrl = fmt.Sprintf("https://www.wenku8.net%s", match[1])
 	}
 }
 
