@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/bmaupin/go-epub"
 	"github.com/samsonmxvi/go-wenku-downloader/downloader"
@@ -82,9 +83,10 @@ func download(novelId int) error {
 
 func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, coverIndex int, downloadPath string) error {
 	formatedVolumeName := formatFilename(volumeName)
+	formatedNovelName := formatFilename(novel.NovelName + "231231")
 	var imagePathList []string
 	// output epub path
-	var epubFilePath string = path.Join(downloadPath, fmt.Sprintf("%s %s.epub", novel.NovelName, formatedVolumeName))
+	var epubFilePath string = path.Join(downloadPath, fmt.Sprintf("%s %s.epub", formatedNovelName, formatedVolumeName))
 	// volume path
 	var volumePath string = path.Join(downloadPath, formatedVolumeName)
 	var imagePath string = path.Join(volumePath, downloader.ImageFolderName)
@@ -95,11 +97,13 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	epub.SetAuthor(novel.Author)
 
 	// add coverImage to epub
-	_, err := util.AddImage(epub, coverPath)
-	if err != nil {
-		return fmt.Errorf("add image to epub failed")
+	if util.CheckFileExist(coverPath) {
+		_, err := util.AddImage(epub, coverPath)
+		if err != nil {
+			return fmt.Errorf("add image to epub failed")
+		}
+		imagePathList = append(imagePathList, coverPath)
 	}
-	imagePathList = append(imagePathList, coverPath)
 
 	for i := 1; i <= chapterCount; i++ {
 		file, err := os.ReadFile(path.Join(volumePath, fmt.Sprintf("%d.json", i)))
@@ -140,7 +144,7 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	internalCoverPath, _ := util.AddCover(epub, tempConverPath)
 	epub.SetCover(internalCoverPath, "")
 
-	err = epub.Write(epubFilePath)
+	err := epub.Write(epubFilePath)
 	if err != nil {
 		return err
 	}
@@ -149,7 +153,14 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 
 func formatFilename(str string) string {
 	newFilename := strings.ReplaceAll(str, "/", "-")
-	re := regexp.MustCompile(`[<>:"/\\|?*\t]`)
-	newFilename = re.ReplaceAllString(newFilename, "")
+	re := regexp.MustCompile(`\p{P}|[0-9|=]`)
+	newFilename = re.ReplaceAllStringFunc(str, func(s string) string {
+		for _, r := range s {
+			if unicode.Is(unicode.Han, r) {
+				return s
+			}
+		}
+		return ""
+	})
 	return newFilename
 }
