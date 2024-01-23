@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/bmaupin/go-epub"
+	"github.com/go-shiori/go-epub"
 )
 
 func AddSection(epub *epub.Epub, title string, article string) error {
