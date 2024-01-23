@@ -95,6 +95,7 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	// create epub
 	epub := epub.NewEpub(novel.NovelName + " " + volumeName)
 	epub.SetAuthor(novel.Author)
+	epub.SetLang("zh-CN")
 
 	// add coverImage to epub
 	if util.CheckFileExist(coverPath) {
