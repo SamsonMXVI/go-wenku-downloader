@@ -18,7 +18,7 @@ import (
 )
 
 func download(novelId int) error {
-	downloadPath := strconv.Itoa(novelId)
+	downloadPath := "download/" + strconv.Itoa(novelId)
 	if err := util.CheckDir(downloadPath); err != nil {
 		return fmt.Errorf("创建目录失败: %e", err)
 	}

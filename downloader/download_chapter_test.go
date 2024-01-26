@@ -19,7 +19,7 @@ func TestDownloadChapter(t *testing.T) {
 	}
 	err := scraper.GetChapterContent(chapter)
 	require.NoError(t, err)
-	err = DownloadChapter(chapter, "第一卷")
+	err = DownloadChapter(chapter, "./test/第一卷")
 	require.NoError(t, err)
 	chapterImage := &scraper.Chapter{
 		Index: 1,
@@ -28,7 +28,7 @@ func TestDownloadChapter(t *testing.T) {
 	}
 	err = scraper.GetChapterContent(chapterImage)
 	require.NoError(t, err)
-	err = DownloadChapter(chapterImage, "第二卷")
+	err = DownloadChapter(chapterImage, "./test/第二卷")
 	require.NoError(t, err)
 
 }
