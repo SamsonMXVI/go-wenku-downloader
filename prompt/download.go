@@ -11,7 +11,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/bmaupin/go-epub"
+	"github.com/go-shiori/go-epub"
 	"github.com/samsonmxvi/go-wenku-downloader/downloader"
 	"github.com/samsonmxvi/go-wenku-downloader/scraper"
 	"github.com/samsonmxvi/go-wenku-downloader/util"
@@ -93,7 +93,10 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	var coverPath string = path.Join(downloadPath, util.GetUrlLastString(novel.Cover))
 
 	// create epub
-	epub := epub.NewEpub(novel.NovelName + " " + volumeName)
+	epub, err := epub.NewEpub(novel.NovelName + " " + volumeName)
+	if err != nil {
+		return err
+	}
 	epub.SetAuthor(novel.Author)
 	epub.SetLang("zh-CN")
 
@@ -145,7 +148,7 @@ func createEpub(novel *scraper.Novel, volumeName string, chapterCount int, cover
 	internalCoverPath, _ := util.AddCover(epub, tempConverPath)
 	epub.SetCover(internalCoverPath, "")
 
-	err := epub.Write(epubFilePath)
+	err = epub.Write(epubFilePath)
 	if err != nil {
 		return err
 	}
